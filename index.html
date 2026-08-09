@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>אילן יוחסין - רוזט ושלמה</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<style>
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #fafafa;
+    margin: 0;
+    padding: 24px;
+    direction: rtl;
+  }
+  h1 {
+    text-align: center;
+    color: #2d2d2d;
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  .legend {
+    text-align: center;
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .legend .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 1px dashed #999;
+    background: #eee;
+    vertical-align: middle;
+    margin: 0 4px;
+  }
+  #diagram {
+    overflow-x: auto;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .mermaid svg {
+    margin: 0 auto;
+    display: block;
+  }
+</style>
+</head>
+<body>
+<h1>אילן יוחסין — רוזט ושלמה</h1>
+<div class="legend"><span class="dot"></span> = בן/בת משפחה שזהותם אינה ידועה</div>
+<div id="diagram">
+<pre class="mermaid">
+graph TD
+    root["רוזט + שלמה"]
+
+    root --> yehudit["יהודית"]
+    root --> yossi1["יוסי"]
+    root --> ilana["אילנה"]
+    root --> uri["אורי"]
+    root --> ivon["איבון"]
+    root --> perah["פרח"]
+    root --> herzel["הרצל"]
+
+    yehudit --> dorit["דורית"]
+    yehudit --> keren["קרן"]
+    yehudit --> yair["יאיר"]
+    yehudit --> chen["חן"]
+
+    dorit --> eden["עדן"]
+    dorit --> dU1["?"]:::unknown
+    dorit --> kobi["קובי"]
+    dorit --> liad["ליעד"]
+
+    eden --> eU1["?"]:::unknown
+
+    keren --> shira["שירה"]
+    keren --> haleli["הללי"]
+    keren --> kU1["?"]:::unknown
+
+    yair --> yaU1["?"]:::unknown
+    yair --> yaU2["?"]:::unknown
+
+    chen --> cU1["?"]:::unknown
+    chen --> cU2["?"]:::unknown
+
+    yossi1 --> udi["אודי"]
+    yossi1 --> liat["ליאת"]
+
+    udi --> idan["עידן"]
+    udi --> yuval["יובל"]
+    udi --> tamar["תמר"]
+
+    liat --> amit["עמית"]
+    liat --> guy["גיא"]
+    liat --> ella["אלה"]
+
+    uri --> roy["רועי"]
+    uri --> yossi2["יוסי"]
+
+    roy --> peer["פאר"]
+    roy --> noa["נועה"]
+    roy --> uriel["אוריאל"]
+    roy --> rU1["?"]:::unknown
+
+    yossi2 --> y2U1["?"]:::unknown
+    yossi2 --> y2U2["?"]:::unknown
+
+    ilana --> itay["איתי"]
+    ilana --> ben["בן"]
+    ilana --> sher["שר"]
+
+    itay --> nitay["ניתאי"]
+    itay --> itU1["?"]:::unknown
+    itay --> itU2["?"]:::unknown
+
+    ben --> bU1["?"]:::unknown
+    ben --> bU2["?"]:::unknown
+    ben --> bU3["?"]:::unknown
+
+    sher --> sU1["?"]:::unknown
+
+    ivon --> tomer["תומר"]
+    ivon --> moran["מורן"]
+    ivon --> shai["שי"]
+    ivon --> gal["גל"]
+
+    tomer --> or1["אור"]
+    tomer --> tU1["?"]:::unknown
+    tomer --> arbel["ארבל"]
+
+    moran --> mU1["?"]:::unknown
+    moran --> mU2["?"]:::unknown
+    moran --> mU3["?"]:::unknown
+    moran --> mU4["?"]:::unknown
+
+    perah --> pU1["רותם"]
+    perah --> noam["נועם"]
+    perah --> ori["אורי"]
+
+    herzel --> emy["אמי"]
+    herzel --> lir["ליר"]
+    herzel --> hU1["?"]:::unknown
+
+    classDef unknown stroke-dasharray: 4 3,fill:#eee,stroke:#999,color:#888;
+    classDef default fill:#ffffff,stroke:#333,stroke-width:1px,color:#222,font-size:14px;
+</pre>
+</div>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#ffffff',
+      primaryBorderColor: '#333333',
+      primaryTextColor: '#222222',
+      lineColor: '#888888',
+      fontFamily: 'Segoe UI, Arial, sans-serif'
+    },
+    flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis' }
+  });
+</script>
+</body>
+</html>
