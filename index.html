@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>אילן יוחסין - רוזט ושלמה</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
 <style>
   body {
     font-family: "Segoe UI", Arial, sans-serif;
@@ -33,6 +32,15 @@
     vertical-align: middle;
     margin: 0 4px;
   }
+  .legend .sq {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 1px solid #6699cc;
+    background: #eef4ff;
+    vertical-align: middle;
+    margin: 0 4px;
+  }
   #diagram {
     overflow-x: auto;
     background: white;
@@ -40,130 +48,439 @@
     padding: 20px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
   }
-  .mermaid svg {
-    margin: 0 auto;
+  #tree svg {
     display: block;
   }
 </style>
 </head>
 <body>
 <h1>אילן יוחסין — רוזט ושלמה</h1>
-<div class="legend"><span class="dot"></span> = בן/בת משפחה שזהותם אינה ידועה</div>
-<div id="diagram">
-<pre class="mermaid">
-graph TD
-    root["רוזט + שלמה"]
-
-    root --> yehudit["יהודית"]
-    root --> yossi1["יוסי"]
-    root --> ilana["אילנה"]
-    root --> uri["אורי"]
-    root --> ivon["איבון"]
-    root --> perah["פרח"]
-    root --> herzel["הרצל"]
-
-    yehudit --> dorit["דורית"]
-    yehudit --> keren["קרן"]
-    yehudit --> yair["יאיר"]
-    yehudit --> chen["חן"]
-
-    dorit --> eden["עדן"]
-    dorit --> dU1["עדי"]
-    dorit --> kobi["קובי"]
-    dorit --> liad["ליעד"]
-
-    eden --> lior["ליאור"]
-    eden --> elroi["אלרואי"]
-
-    kobi --> kobi1["?"]:::unknown
-    
-    keren --> shira["שירה"]
-    keren --> haleli["הללי"]
-    keren --> kU1["?"]:::unknown
-    keren --> kU2["?"]:::unknown
-
-    yair --> yaU1["אייר"]
-    yair --> yaU2["?"]:::unknown
-
-    chen --> cU1["?"]:::unknown
-
-    yossi1 --> udi["אודי"]
-    yossi1 --> liat["ליאת"]
-
-    udi --> idan["עידן"]
-    udi --> yuval["יובל"]
-    udi --> tamar["תמר"]
-
-    liat --> amit["עמית"]
-    liat --> guy["גיא"]
-    liat --> ella["אלה"]
-
-    uri --> roy["רועי"]
-    uri --> yossi2["יוסי"]
-
-    roy --> peer["פאר"]
-    roy --> noa["נועה"]
-    roy --> uriel["אוריאל"]
-    roy --> rU1["?"]:::unknown
-
-    yossi2 --> y2U1["?"]:::unknown
-    yossi2 --> y2U2["?"]:::unknown
-
-    ilana --> itay["איתי"]
-    ilana --> ben["בן"]
-    ilana --> sher["שר"]
-
-    itay --> nitay["ניתאי"]
-    itay --> itU1["?"]:::unknown
-    itay --> itU2["?"]:::unknown
-
-    ben --> bU1["?"]:::unknown
-    ben --> bU2["?"]:::unknown
-    ben --> bU3["?"]:::unknown
-    ben --> bU4["?"]:::unknown
-    ben --> bU5["?"]:::unknown
-
-    sher --> sU1["?"]:::unknown
-
-    ivon --> tomer["תומר"]
-    ivon --> moran["מורן"]
-    ivon --> shai["שי"]
-    ivon --> gal["גל"]
-
-    tomer --> or1["אור"]
-    tomer --> tU1["?"]:::unknown
-    tomer --> arbel["ארבל"]
-
-    moran --> mU1["?"]:::unknown
-    moran --> mU2["?"]:::unknown
-    moran --> mU3["?"]:::unknown
-    moran --> mU4["?"]:::unknown
-
-    perah --> pU1["רותם"]
-    perah --> noam["נועם"]
-    perah --> ori["אורי"]
-
-    herzel --> emy["אמי"]
-    herzel --> lir["ליר"]
-    herzel --> hU1["?"]:::unknown
-
-    classDef unknown stroke-dasharray: 4 3,fill:#eee,stroke:#999,color:#888;
-    classDef default fill:#ffffff,stroke:#333,stroke-width:1px,color:#222,font-size:14px;
-</pre>
+<div class="legend">
+  <span class="dot"></span> = לא ידוע &nbsp;&nbsp;
+  <span class="sq"></span> = בן/בת זוג (נישואין)
 </div>
+<div id="diagram">
+<div id="tree"></div>
+</div>
+
+<!--
+=====================================================================
+ עריכת האילן: כל המידע נמצא באובייקט FAMILY_TREE שלמטה.
+ כל אדם הוא אובייקט עם השדות:
+   name      - השם (מחרוזת). אם חסר, הצומת יוצג כ"?" (לא ידוע).
+   unknown   - true אם האדם לא ידוע/ה (מציג "?" גם אם אין name).
+   spouse    - בן/בת הזוג. אפשר לרשום כמחרוזת פשוטה: spouse: "שם"
+               או כאובייקט: spouse: { name: "שם" } / spouse: { unknown: true }
+               בן/בת הזוג יוצג/תוצג בתיבה נפרדת לצד האדם, עם סימן "+" ביניהם
+               (בלי קו מחבר). קווי הצאצאים ממשיכים רק מהתיבה של האדם עצמו,
+               לא מתיבת בן/בת הזוג.
+   children  - מערך של אנשים (ילדים), באותו מבנה, לכל עומק שרוצים.
+
+ כדי להוסיף בן/בת זוג לכל אדם בכל דור - פשוט הוסיפו לו שדה spouse.
+ כדי להוסיף ילד/אח/נכד - הוסיפו אובייקט נוסף למערך children המתאים.
+ כדי לסמן מישהו כלא-ידוע - כתבו { unknown: true } בלי name.
+=====================================================================
+-->
 <script>
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'base',
-    themeVariables: {
-      primaryColor: '#ffffff',
-      primaryBorderColor: '#333333',
-      primaryTextColor: '#222222',
-      lineColor: '#888888',
-      fontFamily: 'Segoe UI, Arial, sans-serif'
+const FAMILY_TREE = {
+  name: "רוזט",
+  spouse: "שלמה",
+  children: [
+    {
+      name: "יהודית",
+      spouse: "אלי",
+      children: [
+        {
+          name: "דורית",
+          spouse: "אבי",
+          children: [
+            {
+              name: "עדן",
+              spouse: "?",
+              children: [
+                { name: "ליאור" },
+                { name: "אלרואי" }
+              ]
+            },
+            { name: "עדי" },
+            {
+              name: "קובי",
+              spouse: "?",
+              children: [
+                { unknown: true }
+              ]
+            },
+            { name: "ליעד" }
+          ]
+        },
+        {
+          name: "קרן",
+          spouse: "עומרי",
+          children: [
+            { name: "שירה" },
+            { name: "הללי" },
+            { unknown: true },
+            { unknown: true }
+          ]
+        },
+        {
+          name: "יאיר",
+          spouse: "נוי",
+          children: [
+            { name: "אייר" },
+            { name: "ריי" }
+          ]
+        },
+        {
+          name: "חן",
+          spouse: "חן",
+          children: [
+            { unknown: true }
+          ]
+        }
+      ]
     },
-    flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis' }
+    {
+      name: "יוסי",
+      spouse: "אביבה",
+      children: [
+        {
+          name: "אודי",
+          spouse: "מורן",
+          children: [
+            { name: "עידן" },
+            { name: "יובל" },
+            { name: "תמר" }
+          ]
+        },
+        {
+          name: "ליאת",
+          spouse: "עידו",
+          children: [
+            { name: "עמית" },
+            { name: "גיא" },
+            { name: "אלה" }
+          ]
+        }
+      ]
+    },
+    {
+      name: "אורי",
+      spouse: "רחל",
+      children: [
+        {
+          name: "רועי",
+          spouse: "מירן",
+          children: [
+            { name: "פאר" },
+            { name: "נועה" },
+            { name: "אוריאל" },
+            { name: "מוריה" }
+          ]
+        },
+        {
+          name: "יוסי",
+          spouse: "?",
+          children: [
+            { unknown: true },
+            { unknown: true }
+          ]
+        }
+      ]
+    },
+    {
+      name: "אילנה",
+      spouse: "אבי",
+      children: [
+        {
+          name: "איתי",
+          spouse: "יהודית",
+          children: [
+            { name: "ניתאי" },
+            { unknown: true },
+            { unknown: true }
+          ]
+        },
+        {
+          name: "בן",
+          spouse: "?",
+          children: [
+            { unknown: true },
+            { unknown: true },
+            { unknown: true },
+            { unknown: true },
+            { unknown: true }
+          ]
+        },
+        {
+          name: "שר",
+          spouse: "רן",
+          children: [
+            { unknown: true }
+          ]
+        }
+      ]
+    },
+    {
+      name: "איבון",
+      spouse: "אלי",
+      children: [
+        {
+          name: "תומר",
+          spouse: "אלבינה",
+          children: [
+            { name: "אור" },
+            { name: "אליה" },
+            { name: "ארבל" }
+          ]
+        },
+        {
+          name: "מורן",
+          spouse: "אושרי",
+          children: [
+            { unknown: true },
+            { unknown: true },
+            { unknown: true },
+            { unknown: true }
+          ]
+        },
+        { name: "שי" },
+        { name: "גל" }
+      ]
+    },
+    {
+      name: "פרח",
+      spouse: "אילן",
+      children: [
+        { name: "רותם" },
+        { name: "נועם" },
+        { name: "אורי" }
+      ]
+    },
+    {
+      name: "הרצל",
+      spouse: "אודליה",
+      children: [
+        { name: "אמי" },
+        { name: "ליר" },
+        { unknown: true }
+      ]
+    }
+  ]
+};
+
+// =================================================================
+// מנוע רינדור: מציאר את FAMILY_TREE כ-SVG, בלי ספריות חוץ.
+// אין צורך לגעת בקוד הזה כדי לערוך את העץ - רק ב-FAMILY_TREE מעל.
+//
+// עקרון הפריסה:
+//  - לכל אדם יש "עוגן" (x,y) שממנו יוצא הקו למטה לילדים, ואליו נכנס
+//    הקו מלמעלה מההורה. העוגן הזה הוא תמיד מרכז התיבה של האדם עצמו.
+//  - אם יש בן/בת זוג, מוצגת תיבה נוספת לצד התיבה של האדם (עם "+"
+//    ביניהן), אבל היא לא משפיעה על העוגן ולא מחוברת בקו - היא רק
+//    "נספחת" ויזואלית. השטח שהיא תופסת נשמר כדי שלא תהיה חפיפה עם
+//    אחים/ענפים סמוכים.
+// =================================================================
+(function () {
+  const BOX_H = 40;
+  const BOX_PAD_X = 16;
+  const MIN_BOX_W = 56;
+  const PLUS_W = 14;
+  const GAP_PS = 3;    // רווח בין תיבת האדם לסימן ה"+"
+  const GAP_SP = 3;    // רווח בין ה"+" לתיבת בן/בת הזוג
+  const SIB_GAP = 26;  // רווח בין תת-עצים של אחים
+  const LEVEL_H = 100; // מרחק אנכי בין דור לדור
+  const MARGIN = 30;
+
+  const FONT = "14px 'Segoe UI', Arial, sans-serif";
+
+  // --- מדידת טקסט (לרוחב תיבה מדויק) ---------------------------------
+  const measureCanvas = document.createElement("canvas");
+  const mctx = measureCanvas.getContext("2d");
+  mctx.font = FONT;
+  function textWidth(text) {
+    return mctx.measureText(text).width;
+  }
+  function boxWidthFor(label) {
+    return Math.max(MIN_BOX_W, Math.ceil(textWidth(label) + BOX_PAD_X * 2));
+  }
+
+  // --- הכנת המודל: לכל אדם label/unknown/spouse/children -------------
+  function normalizeSpouse(spouse) {
+    if (!spouse) return null;
+    if (typeof spouse === "string") return { name: spouse, unknown: false };
+    return { name: spouse.name || "", unknown: !!spouse.unknown };
+  }
+
+  function prepare(person) {
+    const isUnknown = !!person.unknown || !person.name;
+    const node = {
+      label: isUnknown ? "?" : String(person.name),
+      unknown: isUnknown,
+      children: (person.children || []).map(prepare)
+    };
+    node.personW = boxWidthFor(node.label);
+
+    const spouse = normalizeSpouse(person.spouse);
+    if (spouse) {
+      const spouseUnknown = spouse.unknown || !spouse.name;
+      const spouseLabel = spouseUnknown ? "?" : String(spouse.name);
+      node.spouse = { label: spouseLabel, unknown: spouseUnknown, w: boxWidthFor(spouseLabel) };
+    } else {
+      node.spouse = null;
+    }
+
+    node.rightExtent = node.personW / 2;
+    node.leftExtent = node.personW / 2 + (node.spouse ? GAP_PS + PLUS_W + GAP_SP + node.spouse.w : 0);
+    return node;
+  }
+
+  // --- שלב 1: רוחב תת-עץ (bottom-up) ----------------------------------
+  function layout(node) {
+    if (node.children.length === 0) {
+      node.subtreeWidth = node.leftExtent + node.rightExtent;
+      node.centerOffset = node.leftExtent;
+      return;
+    }
+    node.children.forEach(layout);
+    let cursor = 0;
+    node.children.forEach((c, i) => {
+      c.relLeft = cursor;
+      cursor += c.subtreeWidth + (i < node.children.length - 1 ? SIB_GAP : 0);
+    });
+    const childrenBlockWidth = cursor;
+    const childrenBlockCenter = childrenBlockWidth / 2;
+    node.centerOffset = Math.max(childrenBlockCenter, node.leftExtent);
+    node.subtreeWidth = Math.max(childrenBlockWidth, node.centerOffset + node.rightExtent);
+  }
+
+  // --- שלב 2: קואורדינטות מוחלטות (top-down) --------------------------
+  function place(node, left, depth) {
+    node.x = left + node.centerOffset;
+    node.y = depth * LEVEL_H;
+    node.depth = depth;
+    node.children.forEach((c) => place(c, left + c.relLeft, depth + 1));
+  }
+
+  const root = prepare(FAMILY_TREE);
+  layout(root);
+  place(root, 0, 0);
+
+  let maxDepth = 0;
+  (function walk(n) {
+    maxDepth = Math.max(maxDepth, n.depth);
+    n.children.forEach(walk);
+  })(root);
+
+  const totalWidth = root.subtreeWidth + MARGIN * 2;
+  const totalHeight = (maxDepth + 1) * LEVEL_H + BOX_H + MARGIN * 2;
+
+  // --- בניית ה-SVG -------------------------------------------------------
+  const NS = "http://www.w3.org/2000/svg";
+  function el(name, attrs) {
+    const e = document.createElementNS(NS, name);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  const svg = el("svg", {
+    width: totalWidth,
+    height: totalHeight,
+    viewBox: `0 0 ${totalWidth} ${totalHeight}`,
+    role: "img"
   });
+
+  const linkLayer = el("g", { class: "links" });
+  const nodeLayer = el("g", { class: "nodes" });
+  svg.appendChild(linkLayer);
+  svg.appendChild(nodeLayer);
+
+  function ox(x) { return x + MARGIN; }
+  function oy(y) { return y + MARGIN + BOX_H / 2; }
+
+  function drawLink(parent, child) {
+    const x1 = ox(parent.x), y1 = oy(parent.y) + BOX_H / 2;
+    const x2 = ox(child.x), y2 = oy(child.y) - BOX_H / 2;
+    const midY = (y1 + y2) / 2;
+    const d = `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
+    linkLayer.appendChild(el("path", {
+      d,
+      fill: "none",
+      stroke: "#9aa0a6",
+      "stroke-width": "1.5"
+    }));
+  }
+
+  function drawBox(cx, cy, w, label, unknown, isSpouse) {
+    const x = cx - w / 2;
+    const y = cy - BOX_H / 2;
+    let fill = "#ffffff", stroke = "#333333", dash = null, color = "#222222";
+    if (unknown) {
+      fill = "#eeeeee"; stroke = "#999999"; dash = "4 3"; color = "#888888";
+    } else if (isSpouse) {
+      fill = "#eef4ff"; stroke = "#6699cc"; color = "#334455";
+    }
+    const rectAttrs = {
+      x, y, width: w, height: BOX_H, rx: 6, ry: 6,
+      fill, stroke, "stroke-width": "1.2"
+    };
+    if (dash) rectAttrs["stroke-dasharray"] = dash;
+    nodeLayer.appendChild(el("rect", rectAttrs));
+
+    const text = el("text", {
+      x: cx, y: cy,
+      "text-anchor": "middle",
+      "dominant-baseline": "central",
+      "font-family": "'Segoe UI', Arial, sans-serif",
+      "font-size": "14px",
+      fill: color
+    });
+    text.textContent = label;
+    nodeLayer.appendChild(text);
+  }
+
+  function drawNode(node) {
+    const cx = ox(node.x), cy = oy(node.y);
+
+    if (node.spouse) {
+      // תיבת בן/בת הזוג + סימן ה"+" - תמיד לצד שמאל של תיבת האדם,
+      // בלי שום קשר/קו לעוגן של הצאצאים.
+      const personLeftEdge = cx - node.personW / 2;
+      const plusCx = personLeftEdge - GAP_PS - PLUS_W / 2;
+      const spouseCx = personLeftEdge - GAP_PS - PLUS_W - GAP_SP - node.spouse.w / 2;
+
+      drawBox(spouseCx, cy, node.spouse.w, node.spouse.label, node.spouse.unknown, true);
+
+      const plusText = el("text", {
+        x: plusCx, y: cy,
+        "text-anchor": "middle",
+        "dominant-baseline": "central",
+        "font-family": "'Segoe UI', Arial, sans-serif",
+        "font-size": "18px",
+        "font-weight": "bold",
+        fill: "#999999"
+      });
+      plusText.textContent = "+";
+      nodeLayer.appendChild(plusText);
+    }
+
+    drawBox(cx, cy, node.personW, node.label, node.unknown, false);
+  }
+
+  (function walk(node) {
+    node.children.forEach((c) => {
+      drawLink(node, c);
+      walk(c);
+    });
+  })(root);
+
+  (function walk(node) {
+    drawNode(node);
+    node.children.forEach(walk);
+  })(root);
+
+  document.getElementById("tree").appendChild(svg);
+})();
 </script>
 </body>
 </html>
